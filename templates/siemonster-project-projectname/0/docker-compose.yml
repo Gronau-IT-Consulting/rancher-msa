@@ -6,7 +6,7 @@ services:
     environment:
       SITE_DNAME: ${SITE_DNAME}
       SITE_NAME: siemonster
-      MSA_URL: //admin.${SITE_DNAME}
+      MSA_URL: //msa.${SITE_DNAME}
     stdin_open: true
     tty: true
     labels:
@@ -16,7 +16,7 @@ services:
   msa:
     build: https://github.com/siemonster/project-free.git#master:containers/msa
     environment:
-      ADDITIONAL_PREPARE_COMMAND: 'echo ''db.getCollection("_sites").update({_id:"siemonster"}, {$$set: {names:["admin.${SITE_DNAME}","app.${SITE_DNAME}","${SITE_DNAME}"]}})'' | mongo mongo-sites; SITE_NAME=siemonster SITE_DOMAIN=${SITE_DNAME} node update-apps-links.js'
+      ADDITIONAL_PREPARE_COMMAND: 'echo ''db.getCollection("_sites").update({_id:"siemonster"}, {$$set: {names:["msa.${SITE_DNAME}","app.${SITE_DNAME}","${SITE_DNAME}"]}})'' | mongo mongo-sites; SITE_NAME=siemonster SITE_DOMAIN=${SITE_DNAME} node update-apps-links.js'
     stdin_open: true
     tty: true
     volumes_from:
@@ -57,7 +57,7 @@ services:
         }
 
         server {
-          server_name admin.*;
+          server_name msa.*;
           resolver 169.254.169.250 valid=1s;
           set $$hostpass "msa";
           location / {
